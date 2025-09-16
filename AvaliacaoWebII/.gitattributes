@@ -1,0 +1,19 @@
+# Padroniza quebras de linha para LF no repositório
+* text=auto
+
+# Arquivos Python sempre com LF
+*.py text eol=lf
+
+# Arquivos de configuração
+*.sh text eol=lf
+*.bat text eol=crlf
+
+# Arquivos binários não serão alterados
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.exe binary
+*.dll binary
