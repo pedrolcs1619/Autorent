@@ -1,56 +1,71 @@
-# 🚀 API Django REST Framework - Projeto Base
+# 🚀 AutoRent - Sistema de Locação de Veículos
 
-Bem-vindo ao projeto base para construção de APIs com Django REST Framework!  
-Este repositório contém uma estrutura inicial para uma API RESTful, que você deve expandir conforme a atividade proposta.
-
----
-
-## 📌 Sobre o Projeto
-
-Esta API foi construída usando **Django REST Framework (DRF)** e segue uma estrutura modular com versionamento (`api/v1`).  
-Ela permite gerenciar **clientes** e está preparada para receber melhorias, como **novos modelos**, **autenticação JWT**, **paginação** e **documentação automática**.
+Bem-vindo ao AutoRent, um sistema de gerenciamento de locadora de veículos construído com **Django REST Framework** (DRF).  
+Este projeto oferece uma API RESTful completa, com autenticação JWT, gerenciamento de categorias, veículos, reservas e preços dinâmicos.
 
 ---
 
-## ✅ Tecnologias Utilizadas
+## 📌 Tecnologias Utilizadas
 
-- **Django 5.x**
-- **Django REST Framework**
-- **PostgreSQL (ou SQLite para testes)**
-- **JWT para autenticação**
-- **Swagger para documentação**
+- Django 5.x
+- Django REST Framework
+- PostgreSQL (ou SQLite para testes)
+- JWT para autenticação
+- Swagger / Redoc para documentação automática
 
 ---
 
-## 📌 Instalação e Configuração
+## 🏗 Estrutura do Projeto
 
-### **1️⃣ Clone o repositório**
+/myproject
+│── /autorent
+│ │── /api
+│ │ │── /v1
+│ │ │ │── init.py
+│ │ │ │── viewsets.py
+│ │ │ │── router.py
+│ │ │ │── serializers.py
+│ │── init.py
+│ │── models.py
+│ │── views.py
+│ │── urls.py
+│ │── admin.py
+│── /myproject
+│ │── init.py
+│ │── settings.py
+│ │── urls.py
+│ │── wsgi.py
+│── manage.py
 
-```sh
+yaml
+Copiar código
+
+---
+
+## ⚙️ Instalação e Configuração
+
+### 1️⃣ Clone o repositório
+
+```bash
 git clone https://github.com/matheuslima25/django-api-rest.git
 cd django-api-rest
-```
-
-### **2️⃣ Crie e ative um ambiente virtual**
-
-```sh
+2️⃣ Crie e ative um ambiente virtual
+bash
+Copiar código
 python -m venv venv
-source venv/bin/activate  # Linux/Mac
-venv\Scripts\activate  # Windows
-```
-
-### **3️⃣ Instale as dependências**
-
-```sh
+# Linux / macOS
+source venv/bin/activate
+# Windows
+venv\Scripts\activate
+3️⃣ Instale dependências
+bash
+Copiar código
 pip install -r requirements.txt
-```
+4️⃣ Configure o banco de dados
+No settings.py configure DATABASES. Exemplo PostgreSQL:
 
-### **4️⃣ Configure o banco de dados**
-
-Se estiver usando **PostgreSQL**, configure `DATABASES` no `settings.py`.  
-Caso prefira **SQLite**, a configuração padrão já está pronta.
-
-```python
+python
+Copiar código
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -61,168 +76,119 @@ DATABASES = {
         'PORT': '5432',
     }
 }
-```
+SQLite já vem configurado por padrão.
 
-### **5️⃣ Execute as migrações**
-
-```sh
+5️⃣ Rode migrações
+bash
+Copiar código
 python manage.py migrate
-```
-
-### **6️⃣ Crie um superusuário (para acessar o Django Admin)**
-
-```sh
+6️⃣ Crie superuser (admin)
+bash
+Copiar código
 python manage.py createsuperuser
-```
-
-### **7️⃣ Inicie o servidor**
-
-```sh
+7️⃣ Rode o servidor
+bash
+Copiar código
 python manage.py runserver
-```
+🔑 Autenticação
+JWT (JSON Web Token) usado para autenticação.
 
-Acesse a API via navegador em: [http://127.0.0.1:8000/api/v1/clientes/](http://127.0.0.1:8000/api/v1/clientes/) 🚀
+Endpoints:
 
----
+Método	Endpoint	Descrição
+POST	/api/token/	Login (recebe username e password, retorna access e refresh token)
+POST	/api/token/refresh/	Atualiza access token usando refresh token
 
-## 📌 Estrutura do Projeto
+Exemplo de header nas requisições autenticadas:
 
-```
-/myproject
-│── /autorent
-│   │── /api
-│   │   │── /v1
-│   │   │   │── __init__.py
-│   │   │   │── viewsets.py
-│   │   │   │── router.py
-│   │   │   │── serializers.py
-│   │── __init__.py
-│   │── models.py
-│   │── views.py
-│   │── urls.py
-│   │── admin.py
-│── /myproject
-│   │── __init__.py
-│   │── settings.py
-│   │── urls.py
-│   │── wsgi.py
-│── manage.py
-```
+makefile
+Copiar código
+Authorization: Bearer <ACCESS_TOKEN>
+🚦 Endpoints da API
+1️⃣ Categoria de Veículos
+Método	Endpoint	Descrição
+GET	/api/v1/categorias/	Lista todas categorias
+POST	/api/v1/categorias/	Cria nova categoria
+GET	/api/v1/categorias/{id}/	Detalhes da categoria
+PUT	/api/v1/categorias/{id}/	Atualiza categoria
+DELETE	/api/v1/categorias/{id}/	Deleta categoria
 
----
+Exemplo JSON (POST/PUT):
 
-## 🚀 **Atividade Proposta**
-
-Agora é sua vez! Sua tarefa é **expandir essa API** com os seguintes desafios:
-
-### **1️⃣ Criar novos modelos no banco de dados**
-
-- Adicione os modelos `Product` e `Order` ao `models.py`.
-- Relacione `Order` com `Client` e `Product` (Many-to-Many).
-
-📌 **Exemplo de modelo de Product:**
-
-```python
-class Product(models.Model):
-    name = models.CharField(max_length=255)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
-    stock = models.PositiveIntegerField()
-```
-
-📌 **Exemplo de modelo de Order:**
-
-```python
-class Order(models.Model):
-    client = models.ForeignKey(Client, on_delete=models.CASCADE)
-    products = models.ManyToManyField(Produto)
-    date_order = models.DateTimeField(auto_now_add=True)
-```
-
----
-
-### **2️⃣ Adicionar Autenticação JWT**
-
-- Configure a **autenticação JWT** no `settings.py`.
-- Adicione os endpoints de login e refresh de token no `urls.py`.
-- Proteja os endpoints para exigir autenticação.
-
-📌 **Testando autenticação JWT:**  
-1️⃣ Obtenha um token:
-
-```http
-POST /api/token/
+json
+Copiar código
 {
-    "username": "admin",
-    "password": "admin"
+  "nome": "SUV",
+  "descricao": "Veículo grande",
+  "diaria_base": "250.00"
 }
-```
+2️⃣ Veículos
+Método	Endpoint	Descrição
+GET	/api/v1/veiculos/	Lista todos veículos
+POST	/api/v1/veiculos/	Cria novo veículo
+GET	/api/v1/veiculos/{id}/	Detalhes veículo
+PUT	/api/v1/veiculos/{id}/	Atualiza veículo
+DELETE	/api/v1/veiculos/{id}/	Deleta veículo
 
-2️⃣ Use o token nas requisições:
+Exemplo JSON (POST/PUT):
 
-```http
-GET /api/v1/clientes/
-Headers:
-  Authorization: Bearer SEU_TOKEN_JWT
-```
-
----
-
-### **3️⃣ Implementar Paginação**
-
-- Configure a **paginação** no `settings.py` para **retornar 10 itens por página**.
-
-📌 **Exemplo de resposta paginada:**
-
-```json
+json
+Copiar código
 {
-  "count": 50,
-  "next": "/api/v1/clients/?page=2",
-  "previous": null,
-  "results": [
-    { "id": 1, "nome": "Ana Souza" },
-    { "id": 2, "nome": "Carlos Mendes" }
-  ]
+  "categoria": 1,
+  "marca": "Toyota",
+  "modelo": "Corolla",
+  "placa": "ABC1234",
+  "ano": 2020,
+  "status": "disponivel"
 }
+3️⃣ Reservas
+Método	Endpoint	Descrição
+GET	/api/v1/reservas/	Lista todas reservas
+POST	/api/v1/reservas/	Cria reserva
+GET	/api/v1/reservas/{id}/	Detalhes reserva
+PUT	/api/v1/reservas/{id}/	Atualiza reserva
+DELETE	/api/v1/reservas/{id}/	Deleta reserva
+
+Exemplo JSON (POST/PUT):
+
+json
+Copiar código
+{
+  "usuario": 1,
+  "veiculo": 2,
+  "data_inicio": "2025-09-16",
+  "data_fim": "2025-09-20",
+  "status": "pendente"
+}
+4️⃣ Preço Dinâmico
+Método	Endpoint	Descrição
+GET	/api/v1/precos/	Lista todos preços
+POST	/api/v1/precos/	Cria preço dinâmico
+GET	/api/v1/precos/{id}/	Detalhes preço
+PUT	/api/v1/precos/{id}/	Atualiza preço
+DELETE	/api/v1/precos/{id}/	Deleta preço
+
+Exemplo JSON (POST/PUT):
+
+json
+Copiar código
+{
+  "veiculo": 2,
+  "data": "2025-09-17",
+  "preco": "300.00"
+}
+📄 Documentação da API
+Swagger UI: /api/docs/
+
+Redoc: /api/redoc/
+
+Esquema OpenAPI: /api/schema/
+
+🛠 Teste da API
+Use Insomnia, Postman ou Swagger UI para testar os endpoints com tokens JWT.
+
+makefile
+Copiar código
+Authorization: Bearer <ACCESS_TOKEN>
 ```
-
----
-
-### **4️⃣ Criar Documentação Automática**
-
-- Instale o **drf-spectacular** para gerar a documentação Swagger.
-- Adicione as rotas para visualizar a documentação.
-
-📌 **Acesse a documentação interativa em:**
-
-```
-http://127.0.0.1:8000/api/docs/
-```
-
----
-
-## 📚 **Materiais de Apoio**
-
-- 📌 [Documentação Oficial do Django REST Framework](https://www.django-rest-framework.org/)
-- 📌 [Como Funciona JWT Authentication](https://jwt.io/introduction/)
-- 📌 [Postman - Testando APIs](https://learning.postman.com/docs/getting-started/introduction/)
-- 📌 [Django ORM Queries Avançadas](https://docs.djangoproject.com/en/4.0/topics/db/queries/)
-
-💡 **Dúvidas? Use a documentação e explore os links acima!** 🚀
-
----
-
-## 🚀 **Conclusão**
-
-Agora é com você! 🔥  
-✔️ **Implemente os novos modelos**  
-✔️ **Configure a autenticação JWT**  
-✔️ **Adicione paginação**  
-✔️ **Gere a documentação automática**
-
-💡 Quando finalizar, teste suas requisições no **Postman** e confira os dados no **Django Admin**!
-
----
-
-## 🤝 **Dúvidas?**
-
-Caso tenha dúvidas, entre em contato pelo **Discord** ou pelo e-mail do professor. Boa prática e divirta-se! 🚀
