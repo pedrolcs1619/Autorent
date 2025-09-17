@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 import os
+from datetime import timedelta
 
 from decouple import config
 
@@ -119,6 +120,23 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
+
+    # 🔑 Configuração para usar cookies
+    "AUTH_COOKIE": "access_token",        # Nome do cookie de access token
+    "AUTH_COOKIE_REFRESH": "refresh_token", # Nome do cookie de refresh token
+    "AUTH_COOKIE_SECURE": False,          # True em produção com HTTPS
+    "AUTH_COOKIE_HTTP_ONLY": True,        # O JS não consegue ler (segurança)
+    "AUTH_COOKIE_PATH": "/",              # Caminho do cookie
+    "AUTH_COOKIE_SAMESITE": "Lax",
+}
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
@@ -143,12 +161,18 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
-    "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
+     "DEFAULT_AUTHENTICATION_CLASSES": (
+        "autorent.auth.CookieJWTAuthentication",
+    ),
+    "DEFAULT_PERMISSION_CLASSES": (
+        "rest_framework.permissions.IsAuthenticated",
     ),
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 5,
+
+    
 }
+
 
 SPECTACULAR_SETTINGS = {
     "TITLE": "Minha API Django",

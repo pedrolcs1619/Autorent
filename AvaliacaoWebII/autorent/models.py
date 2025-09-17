@@ -1,4 +1,3 @@
-# apps/rent/models.py
 from django.db import models
 from django.conf import settings
 
@@ -38,7 +37,9 @@ class Veiculo(models.Model):
     modelo = models.CharField(max_length=100)
     placa = models.CharField(max_length=10, unique=True)
     ano = models.PositiveIntegerField()
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=DISPONIVEL)
+    status = models.CharField(
+        max_length=20, choices=STATUS_CHOICES, default=DISPONIVEL
+    )
 
     def __str__(self):
         return f"{self.marca} {self.modelo} ({self.placa})"
@@ -60,7 +61,7 @@ class Reserva(models.Model):
         (CONCLUIDA, "Concluída"),
     ]
 
-    usuario =  models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     veiculo = models.ForeignKey(
         Veiculo, on_delete=models.CASCADE, related_name="reservas"
     )
@@ -70,8 +71,10 @@ class Reserva(models.Model):
     preco_total = models.DecimalField(
         max_digits=10, decimal_places=2, blank=True, null=True
     )
-
     criado_em = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-criado_em"]  # ordena do mais recente para o mais antigo
 
     def __str__(self):
         return f"Reserva {self.id} - {self.veiculo} - {self.usuario}"
@@ -89,6 +92,7 @@ class PrecoDinamico(models.Model):
 
     class Meta:
         unique_together = ("veiculo", "data")
+        ordering = ["data"]
 
     def __str__(self):
         return f"{self.veiculo} - {self.data} - R$ {self.preco}"
