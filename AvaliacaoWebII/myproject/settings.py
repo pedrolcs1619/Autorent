@@ -92,11 +92,11 @@ WSGI_APPLICATION = "myproject.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "AvaliacaoWebII",
-        "USER": "postgres",
-        "PASSWORD": "p09017816490s",
-        "HOST": "localhost",
-        "PORT": "5432",
+        "NAME": config("DATABASE_NAME"),
+        "USER": config("DATABASE_USER"),
+        "PASSWORD": config("DATABASE_PASSWORD"),
+        "HOST": config("DATABASE_HOST", default="localhost"),
+        "PORT": config("DATABASE_PORT", default="5432"),
     }
 }
 
@@ -122,17 +122,15 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=config("ACCESS_TOKEN_LIFETIME", default=30, cast=int)),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=config("REFRESH_TOKEN_LIFETIME", default=1, cast=int)),
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
-
-    # 🔑 Configuração para usar cookies
-    "AUTH_COOKIE": "access_token",        # Nome do cookie de access token
-    "AUTH_COOKIE_REFRESH": "refresh_token", # Nome do cookie de refresh token
-    "AUTH_COOKIE_SECURE": False,          # True em produção com HTTPS
-    "AUTH_COOKIE_HTTP_ONLY": True,        # O JS não consegue ler (segurança)
-    "AUTH_COOKIE_PATH": "/",              # Caminho do cookie
+    "AUTH_COOKIE": "access_token",
+    "AUTH_COOKIE_REFRESH": "refresh_token",
+    "AUTH_COOKIE_SECURE": False,
+    "AUTH_COOKIE_HTTP_ONLY": True,
+    "AUTH_COOKIE_PATH": "/",
     "AUTH_COOKIE_SAMESITE": "Lax",
 }
 
