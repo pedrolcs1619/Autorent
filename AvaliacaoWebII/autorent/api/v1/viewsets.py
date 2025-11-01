@@ -13,20 +13,22 @@ from .serializers import (
 from ...utils import calcular_preco_total_reserva
 
 
-# ------------------------------
-# ViewSets com Soft Delete
-# ------------------------------
+
+
+
+
 
 class CategoriaVeiculoViewSet(viewsets.ModelViewSet):
     queryset = CategoriaVeiculo.objects.all()
     serializer_class = CategoriaVeiculoSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-    # Soft Delete
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         instance.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    
 
 
 class VeiculoViewSet(viewsets.ModelViewSet):
@@ -39,7 +41,8 @@ class VeiculoViewSet(viewsets.ModelViewSet):
         instance = self.get_object()
         instance.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
+    
+    
 
 class ReservaViewSet(viewsets.ModelViewSet):
     queryset = Reserva.objects.all()
@@ -106,7 +109,6 @@ class PrecoDinamicoViewSet(viewsets.ModelViewSet):
         instance.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-
 # ------------------------------
 # JWT com cookies
 # ------------------------------
@@ -114,25 +116,31 @@ class PrecoDinamicoViewSet(viewsets.ModelViewSet):
 class CookieTokenObtainPairViewSet(TokenObtainPairView):
     def post(self, request, *args, **kwargs):
         response = super().post(request, *args, **kwargs)
-        data = response.data
+     
+        if response.status_code == 200:
 
-        refresh = data.get("refresh")
-        access = data.get("access")
+            refresh = response.data.get("refresh")
+            access = response.data.get("access")
+            
+            response.data.clear()
+            response.data["mensagem"] = "Loggin realizado com sucesso"
 
-        response.set_cookie(
-            key="access_token",
-            value=access,
-            httponly=True,
-            secure=False,
-            samesite="Lax",
-        )
-        response.set_cookie(
-            key="refresh_token",
-            value=refresh,
-            httponly=True,
-            secure=False,
-            samesite="Lax",
-        )
+            response.set_cookie(
+                key="access_token",
+                value=access,
+                httponly=True,
+                secure=False,
+                samesite="Lax",
+                max_age=60*60,
+            )
+            response.set_cookie(
+                key="refresh_token",
+                value=refresh,
+                httponly=True,
+                secure=False,
+                samesite="Lax",
+                max_age=60*60,
+            )
 
         return response
 
@@ -142,19 +150,24 @@ class CookieTokenRefreshViewSet(TokenRefreshView):
         response = super().post(request, *args, **kwargs)
         new_access = response.data.get("access")
         if new_access:
+            
+            response.data.clear()
+            response.data["menssage"] = "Token atualizado com sucesso"
+
             response.set_cookie(
                 key="access_token",
                 value=new_access,
                 httponly=True,
                 secure=False,
                 samesite="Lax",
+                max_age=60*60
             )
         return response
 
-
 class LogoutViewSet(APIView):
     def post(self, request):
-        response = Response({"detail": "Logout realizado com sucesso."})
+        response = Response({"detail": "Logout realizado com sucesso."},
+                             status = status.HTTP_200_OK)
         response.delete_cookie("access_token")
         response.delete_cookie("refresh_token")
         return response

@@ -6,19 +6,18 @@ from django.utils import timezone
 
 class SoftDeleteManager(models.Manager):
     def get_queryset(self):
-        # Retorna apenas objetos ativos
+    
         return super().get_queryset().filter(ativo=True)
     
 
-# BaseModel abstrato
 class BaseModel(models.Model):
     criado_em = models.DateTimeField(auto_now_add=True)
     atualizado_em = models.DateTimeField(auto_now=True)
     ativo = models.BooleanField(default=True)
     deletado_em = models.DateTimeField(null=True, blank=True)
 
-    objects = SoftDeleteManager()  # Manager padrão (filtra ativos)
-    all_objects = models.Manager()  # Para acessar todos os registros
+    objects = SoftDeleteManager()  
+    all_objects = models.Manager()  
 
     class Meta:
         abstract = True
@@ -89,28 +88,23 @@ class Reserva(BaseModel):
         ordering = ["-criado_em"]
 
     def save(self, *args, **kwargs):
-        # Calcula preco_total se não definido
+        
         dias = (self.data_fim - self.data_inicio).days + 1
         if self.preco_total is None:
             self.preco_total = self.veiculo.categoria.diaria_base * dias
 
-        # Define status da reserva (por enquanto)
         if self.veiculo.status == Veiculo.ALUGADO:
             self.status = Reserva.CONFIRMADA
         elif self.veiculo.status == Veiculo.MANUTENCAO:
-            self.status = Reserva.PENDENTE
+            self.status = Reserva.CANCELADA
         else:
-            self.status = Reserva.CONFIRMADA  # aqui você quer confirmar a reserva
+            self.status = Reserva.CONFIRMADA 
 
         super().save(*args, **kwargs)  # salva a reserva
 
-        # **Atualiza o status do veículo baseado na reserva confirmada**
         if self.status == Reserva.CONFIRMADA:
             self.veiculo.status = Veiculo.ALUGADO
-            self.veiculo.save()  # MUITO IMPORTANTE: precisa salvar o veículo
-
-
-
+            self.veiculo.save()  
 
 # Preço dinâmico
 class PrecoDinamico(BaseModel):
