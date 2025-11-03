@@ -18,6 +18,9 @@ const Sidebar: React.FC = () => {
         <Link to="/clients" style={styles.link}>
           Clientes
         </Link>
+        <Link to="/categoria" style={styles.link}>
+          Categoria
+        </Link>
       </nav>
     </div>
   );
