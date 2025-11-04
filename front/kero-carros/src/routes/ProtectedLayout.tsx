@@ -1,3 +1,4 @@
+// src/routes/ProtectedLayout.tsx
 import React from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
@@ -15,11 +16,26 @@ const ProtectedLayout: React.FC<Props> = ({ children }) => {
   }
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh" }}>
+    <div style={styles.container}>
       <Sidebar />
-      <main style={{ flex: 1, padding: "20px" }}>{children}</main>
+      <main style={styles.main}>{children}</main>
     </div>
   );
+};
+
+const styles: { [key: string]: React.CSSProperties } = {
+  container: {
+    display: "flex",
+    minHeight: "100vh",
+    width: "100vw",
+  },
+  main: {
+    flex: 1, // ocupa todo espaço restante
+    minHeight: "100vh",
+    padding: "20px",
+    boxSizing: "border-box",
+    backgroundColor: "#f4f4f4", // mesma cor do container antes
+  },
 };
 
 export default ProtectedLayout;

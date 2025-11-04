@@ -8,7 +8,7 @@ import type { Categoria } from "../types/categoria";
 import CategoriaForm from "../components/CategoriaForms";
 import CategoriaList from "../components/CategoriaList";
 import FiltroGenerico from "../components/FiltroComponent";
-import { Trash2 } from "lucide-react";
+import BulkDeleteButton from "../components/BulkDeleteButton";
 
 const CategoriaPage: React.FC = () => {
   const [categorias, setCategorias] = useState<Categoria[]>([]);
@@ -20,7 +20,7 @@ const CategoriaPage: React.FC = () => {
     try {
       const data = await listarCategorias();
       setCategorias(data);
-      setSelecionadas([]);
+      setSelecionadas([]); // limpa seleção ao recarregar
     } catch (error) {
       console.error("Erro ao carregar categorias:", error);
     }
@@ -46,14 +46,19 @@ const CategoriaPage: React.FC = () => {
     );
   });
 
+  // Função de exclusão das categorias selecionadas
   const handleApagarSelecionadas = async () => {
-    if (!window.confirm("Deseja realmente apagar as categorias selecionadas?"))
+    if (selecionadas.length === 0) return;
+    if (
+      !window.confirm(
+        `Deseja realmente apagar ${selecionadas.length} categoria(s)?`
+      )
+    )
       return;
 
     try {
       await Promise.all(selecionadas.map((id) => apagarCategoria(id)));
-
-      carregarCategorias();
+      await carregarCategorias(); // recarrega a lista
     } catch (error) {
       console.error("Erro ao apagar categorias:", error);
     }
@@ -102,16 +107,11 @@ const CategoriaPage: React.FC = () => {
         onLimpar={() => setFiltros({})}
       />
 
-      {/* Botão apagar categorias selecionadas */}
-      {selecionadas.length > 0 && (
-        <button
-          onClick={handleApagarSelecionadas}
-          className="flex items-center gap-2 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 shadow transition mb-4"
-        >
-          <Trash2 size={18} />
-          Apagar {selecionadas.length} selecionada(s)
-        </button>
-      )}
+      {/* Botão de apagar categorias */}
+      <BulkDeleteButton
+        selecionadas={selecionadas}
+        onDelete={handleApagarSelecionadas}
+      />
 
       {/* Lista de categorias */}
       <CategoriaList

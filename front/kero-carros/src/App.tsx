@@ -1,95 +1,67 @@
+// src/App.tsx
 import React from "react";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "./context/AuthProvider";
+import ProtectedLayout from "./routes/ProtectedLayout";
 
-import LoginPage from "./pages/LoginPage";
 import DashboardPage from "./pages/DashboardPage";
 import CarsPage from "./pages/CarsPage";
 import ReservationsPage from "./pages/ReservationsPage";
 import ClientsPage from "./pages/ClientsPage";
-import CategoriaAdd from "./pages/CategoriaPage";
-import ProtectedLayout from "./components/ProtectedLayout";
 import CategoriaPage from "./pages/CategoriaPage";
-
-const isAuthenticated = () => !!localStorage.getItem("token");
+import LoginPage from "./pages/LoginPage";
 
 const App: React.FC = () => {
   return (
-    <Router>
-      <Routes>
-        {/* Página de login */}
-        <Route path="/" element={<LoginPage />} />
+    <AuthProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<LoginPage />} />
 
-        {/* Rotas protegidas */}
-        <Route
-          path="/dashboard"
-          element={
-            isAuthenticated() ? (
+          {/* Todas essas rotas ficam dentro do layout protegido */}
+          <Route
+            path="/dashboard"
+            element={
               <ProtectedLayout>
                 <DashboardPage />
               </ProtectedLayout>
-            ) : (
-              <Navigate to="/" replace />
-            )
-          }
-        />
-        <Route
-          path="/cars"
-          element={
-            isAuthenticated() ? (
+            }
+          />
+          <Route
+            path="/cars"
+            element={
               <ProtectedLayout>
                 <CarsPage />
               </ProtectedLayout>
-            ) : (
-              <Navigate to="/" replace />
-            )
-          }
-        />
-        <Route
-          path="/reservations"
-          element={
-            isAuthenticated() ? (
+            }
+          />
+          <Route
+            path="/reservations"
+            element={
               <ProtectedLayout>
                 <ReservationsPage />
               </ProtectedLayout>
-            ) : (
-              <Navigate to="/" replace />
-            )
-          }
-        />
-        <Route
-          path="/categoria"
-          element={
-            isAuthenticated() ? (
-              <ProtectedLayout>
-                <CategoriaPage />
-              </ProtectedLayout>
-            ) : (
-              <Navigate to="/" replace />
-            )
-          }
-        />
-        <Route
-          path="/clients"
-          element={
-            isAuthenticated() ? (
+            }
+          />
+          <Route
+            path="/clients"
+            element={
               <ProtectedLayout>
                 <ClientsPage />
               </ProtectedLayout>
-            ) : (
-              <Navigate to="/" replace />
-            )
-          }
-        />
-
-        {/* Rota catch-all: redireciona para login se nenhum path combinar */}
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </Router>
+            }
+          />
+          <Route
+            path="/categoria"
+            element={
+              <ProtectedLayout>
+                <CategoriaPage />
+              </ProtectedLayout>
+            }
+          />
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 };
 

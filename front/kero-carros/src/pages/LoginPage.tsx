@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { loginUser } from "../services/authServices";
+import { useAuth } from "../hooks/useAuth";
 
 const LoginPage: React.FC = () => {
   const [form, setForm] = useState({ username: "", password: "" });
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { login } = useAuth(); // Hook do AuthContext
+  console.log(useAuth());
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -16,8 +18,7 @@ const LoginPage: React.FC = () => {
     setError("");
 
     try {
-      const data = await loginUser(form.username, form.password);
-      localStorage.setItem("token", data.access);
+      await login(form.username, form.password); // chama login do contexto
       navigate("/dashboard");
     } catch {
       setError("Usuário ou senha incorretos.");
@@ -111,9 +112,9 @@ const styles: Record<string, React.CSSProperties> = {
   },
 };
 
-// Efeito hover bonito no botão
-styles.button[":hover" as any] = {
-  backgroundColor: "#155ab6",
-};
+// // Efeito hover no botão
+// styles.button[":hover" as any] = {
+//   backgroundColor: "#155ab6",
+// };
 
 export default LoginPage;
