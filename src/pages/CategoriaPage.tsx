@@ -4,7 +4,6 @@ import { listarCategorias } from "../services/CategoriaService";
 import type { Categoria } from "../types/categoria";
 import CategoriaForm from "../components/CategoriaForms";
 import CategoriaList from "../components/CategoriaList";
-import "tailwindcss";
 
 const CategoriaPage: React.FC = () => {
   const [categorias, setCategorias] = useState<Categoria[]>([]);
