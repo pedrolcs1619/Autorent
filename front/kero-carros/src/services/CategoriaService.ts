@@ -1,38 +1,40 @@
-import type{Categoria} from "../types/categoria";
+import type { Categoria } from "../types/categoria";
 
-const API_URL = "http://localhost:8000/api/v1/categorias/";
+const API_URL = "http://localhost:8000/api/v1/categorias"; // <-- sem a barra no final
 
-export async function listarCategorias() {
-  const response = await fetch("http://localhost:8000/api/v1/categorias/", {
-    method: "GET",
-    headers: { "Content-Type": "application/json" },
+// Listar todas as categorias
+export const listarCategorias = async (): Promise<Categoria[]> => {
+  const response = await fetch(`${API_URL}/`, { // adiciona barra aqui
     credentials: "include",
   });
-
-  if (!response.ok) throw new Error("Erro ao listar categorias");
-
   const data = await response.json();
-
-  // 👇 Aqui está a correção: pega o array dentro de "results"
-  const categorias = data.results || [];
-
-  return categorias.map((cat: any) => ({
-    id: cat.id,
-    nome: cat.nome,
-    descricao: cat.descricao,
-    diaria_base: parseFloat(cat.diaria_base) || 0,
+  return data.results.map((cat: any) => ({
+    ...cat,
+    diaria_base: Number(cat.diaria_base),
   }));
-}
+};
 
-
-export async function criarCategoria(categoria: Omit<Categoria, "id">) {
-  const response = await fetch(API_URL, {
+// Criar uma nova categoria
+export const criarCategoria = async (
+  categoria: Omit<Categoria, "id">
+): Promise<Categoria> => {
+  const response = await fetch(`${API_URL}/`, { // adiciona barra aqui
     method: "POST",
     headers: { "Content-Type": "application/json" },
     credentials: "include",
     body: JSON.stringify(categoria),
   });
-  
+
   if (!response.ok) throw new Error("Erro ao criar categoria");
   return response.json();
-}
+};
+
+// Apagar uma categoria pelo ID
+export const apagarCategoria = async (id: number): Promise<void> => {
+  const response = await fetch(`${API_URL}/${id}/`, { // apenas 1 barra entre URL e id
+    method: "DELETE",
+    credentials: "include",
+  });
+
+  if (!response.ok) throw new Error("Erro ao apagar categoria");
+};
