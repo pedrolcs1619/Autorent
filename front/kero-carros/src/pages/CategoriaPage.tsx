@@ -10,7 +10,7 @@ import FiltroGenerico from "../components/FiltroComponent";
 import BulkDeleteButton from "../components/BulkDeleteButton";
 
 // Importando os estilos
-import * as S from "../styles/CategoriaPageStyles";
+import * as S from "../styles/pages/CategoriaPageStyles";
 
 const CategoriaPage: React.FC = () => {
   const [categorias, setCategorias] = useState<Categoria[]>([]);

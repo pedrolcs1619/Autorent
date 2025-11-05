@@ -8,7 +8,7 @@ import VeiculoList from "../components/VeiculoList";
 import CategoriaList from "../components/CategoriaList";
 
 // Importando os estilos
-import * as S from "../styles/VeiculoPageStyles";
+import * as S from "../styles/pages/VeiculoPageStyles";
 
 const VeiculoPage: React.FC = () => {
   const [veiculos, setVeiculos] = useState<Veiculo[]>([]);
