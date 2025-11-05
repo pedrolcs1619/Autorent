@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import * as S from "../styles/components/InputFieldStyles";
 
 interface InputFieldProps {
   label: string;
@@ -12,37 +13,23 @@ const InputField: React.FC<InputFieldProps> = ({
   type = "text",
   value,
   onChange,
-}) => (
-  <div style={styles.container}>
-    <label style={styles.label}>{label}</label>
-    <input
-      type={type}
-      value={value}
-      onChange={onChange}
-      style={styles.input}
-      required
-    />
-  </div>
-);
+}) => {
+  const [focused, setFocused] = useState(false);
 
-const styles: { [key: string]: React.CSSProperties } = {
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    marginBottom: "15px",
-  },
-  label: {
-    fontSize: "14px",
-    color: "#333",
-    marginBottom: "5px",
-    textAlign: "left",
-  },
-  input: {
-    padding: "10px",
-    border: "1px solid #ccc",
-    borderRadius: "8px",
-    fontSize: "16px",
-  },
+  return (
+    <div style={S.container}>
+      <label style={S.label}>{label}</label>
+      <input
+        type={type}
+        value={value}
+        onChange={onChange}
+        style={{ ...S.input, ...(focused ? S.inputFocus : {}) }}
+        required
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+      />
+    </div>
+  );
 };
 
 export default InputField;

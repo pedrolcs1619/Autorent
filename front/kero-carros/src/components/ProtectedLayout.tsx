@@ -1,7 +1,8 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
-import Sidebar from "../components/Sidebar";
+import Sidebar from "./Sidebar";
+import * as S from "../styles/components/ProtectedLayoutStyles";
 
 interface Props {
   children: React.ReactNode;
@@ -15,9 +16,9 @@ const ProtectedLayout: React.FC<Props> = ({ children }) => {
   }
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh" }}>
+    <div style={S.container}>
       <Sidebar />
-      <main style={{ flex: 1, padding: "20px" }}>{children}</main>
+      <main style={S.main}>{children}</main>
     </div>
   );
 };

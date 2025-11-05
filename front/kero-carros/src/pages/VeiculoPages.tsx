@@ -7,6 +7,9 @@ import BulkDeleteButton from "../components/BulkDeleteButton";
 import VeiculoList from "../components/VeiculoList";
 import CategoriaList from "../components/CategoriaList";
 
+// Importando os estilos
+import * as S from "../styles/VeiculoPageStyles";
+
 const VeiculoPage: React.FC = () => {
   const [veiculos, setVeiculos] = useState<Veiculo[]>([]);
   const [selecionados, setSelecionados] = useState<number[]>([]);
@@ -67,19 +70,29 @@ const VeiculoPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 p-10">
-      <h1 className="text-3xl font-extrabold text-blue-700 mb-6 text-center">
-        Veículos
-      </h1>
+    <div style={S.container}>
+      <h1 style={S.titulo}>Veículos</h1>
 
-      {/* Botão abrir formulário */}
-      <div className="mb-6">
+      {/* Botão abrir/fechar formulário */}
+      <div>
         <button
           onClick={() => {
             setMostrarForm(!mostrarForm);
             setVeiculoEditando(null);
           }}
-          className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-2xl font-semibold shadow-lg hover:from-blue-600 hover:to-blue-700 hover:shadow-xl transition-all duration-300 mb-4"
+          style={S.botaoAdicionar}
+          onMouseEnter={(e) =>
+            Object.assign(
+              (e.target as HTMLButtonElement).style,
+              S.botaoAdicionarHover
+            )
+          }
+          onMouseLeave={(e) =>
+            Object.assign(
+              (e.target as HTMLButtonElement).style,
+              S.botaoAdicionar
+            )
+          }
         >
           {mostrarForm ? "Fechar Formulário" : "Cadastrar Veículo"}
         </button>
@@ -101,28 +114,30 @@ const VeiculoPage: React.FC = () => {
       </div>
 
       {/* Filtros */}
-      <FiltroGenerico
-        campos={[
-          { nome: "marca", label: "Marca", placeholder: "Ex: Honda" },
-          { nome: "modelo", label: "Modelo", placeholder: "Ex: Civic" },
-          { nome: "status", label: "Status", placeholder: "disponivel" },
-        ]}
-        onFiltrar={handleFiltrar}
-        onLimpar={() => setFiltros({})}
-      />
+      <div style={S.filtroContainer}>
+        <FiltroGenerico
+          campos={[
+            { nome: "marca", label: "Marca", placeholder: "Ex: Honda" },
+            { nome: "modelo", label: "Modelo", placeholder: "Ex: Civic" },
+            { nome: "status", label: "Status", placeholder: "disponivel" },
+          ]}
+          onFiltrar={handleFiltrar}
+          onLimpar={() => setFiltros({})}
+        />
+      </div>
 
       {/* Bulk Delete */}
-      <div className="mb-4">
+      <div style={S.bulkDeleteContainer}>
         <BulkDeleteButton
           selecionadas={selecionados}
           onDelete={handleApagarSelecionados}
         />
       </div>
 
-      {/* Lista de veículos usando VeiculoList */}
+      {/* Lista de veículos */}
       <VeiculoList
         veiculos={veiculosFiltrados}
-        categorias={CategoriaList} // <- lista de categorias carregada
+        categorias={CategoriaList}
         selecionados={selecionados}
         setSelecionados={setSelecionados}
         onEdit={handleEditar}

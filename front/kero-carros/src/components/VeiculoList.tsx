@@ -1,6 +1,7 @@
 import React from "react";
 import type { Veiculo } from "../types/veiculo";
 import { Car, Edit3 } from "lucide-react";
+import * as S from "../styles/components/VeiculoListStyles";
 
 interface VeiculoListProps {
   veiculos: Veiculo[];
@@ -23,67 +24,93 @@ const VeiculoList: React.FC<VeiculoListProps> = ({
 
   if (!veiculos.length) {
     return (
-      <p className="text-center text-gray-500 italic mt-10">
+      <p
+        style={{
+          textAlign: "center",
+          color: "#6b7280",
+          fontStyle: "italic",
+          marginTop: "2.5rem",
+        }}
+      >
         Nenhum veículo cadastrado ainda.
       </p>
     );
   }
 
   return (
-    <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 mb-10">
+    <div
+      style={{
+        display: "grid",
+        gap: "2rem",
+        gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+        marginBottom: "2.5rem",
+      }}
+    >
       {veiculos.map((v) => (
         <div
           key={v.id}
-          className={`relative bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transform transition-all border border-gray-100 ${
-            selecionados.includes(v.id!) ? "ring-2 ring-blue-400" : ""
-          }`}
+          style={{
+            ...S.card,
+            ...(selecionados.includes(v.id!) ? S.cardSelected : {}),
+          }}
         >
-          {/* Checkbox de seleção */}
-          <label className="absolute top-3 right-3 flex items-center">
+          {/* Checkbox */}
+          <label
+            style={{
+              position: "absolute",
+              top: "0.75rem",
+              right: "0.75rem",
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
             <input
               type="checkbox"
               checked={selecionados.includes(v.id!)}
               onChange={() => toggleSelecionar(v.id!)}
-              className="w-5 h-5 accent-blue-600"
+              style={S.checkbox}
             />
-            <span className="sr-only">Selecionar {v.modelo}</span>
           </label>
 
-          {/* Cabeçalho com ícone */}
-          <div className="flex items-center gap-3 mb-4">
-            <div className="bg-blue-100 p-3 rounded-xl">
-              <Car className="text-blue-600" size={24} />
+          {/* Cabeçalho */}
+          <div style={S.cardHeader}>
+            <div style={S.iconWrapper}>
+              <Car size={24} color="#2563eb" />
             </div>
-            <h2 className="text-lg font-semibold">
-              <span className="text-blue-600" title="Marca do veículo">
-                {v.marca}
-              </span>{" "}
-              <span className="text-gray-800" title="Modelo do veículo">
-                {v.modelo}
-              </span>
+            <h2 style={{ fontSize: "1.125rem", fontWeight: 600 }}>
+              <span style={{ color: "#2563eb" }}>{v.marca}</span>{" "}
+              <span style={{ color: "#1f2937" }}>{v.modelo}</span>
             </h2>
           </div>
 
-          {/* Detalhes do veículo */}
-          <p className="text-gray-600 text-sm leading-relaxed mb-1">
-            <span className="font-semibold">Categoria:</span> {v.categoria}
-          </p>
-          <p className="text-gray-600 text-sm leading-relaxed mb-1">
-            <span className="font-semibold">Placa:</span> {v.placa}
-          </p>
-          <p className="text-gray-600 text-sm leading-relaxed mb-1">
-            <span className="font-semibold">Ano:</span> {v.ano}
-          </p>
-          <p className="text-gray-600 text-sm leading-relaxed">
-            <span className="font-semibold">Status:</span>{" "}
-            {v.status.charAt(0).toUpperCase() + v.status.slice(1)}
-          </p>
+          {/* Detalhes */}
+          <div style={S.details}>
+            <p>
+              <strong>Categoria:</strong> {v.categoria}
+            </p>
+            <p>
+              <strong>Placa:</strong> {v.placa}
+            </p>
+            <p>
+              <strong>Ano:</strong> {v.ano}
+            </p>
+            <p>
+              <strong>Status:</strong>{" "}
+              {v.status.charAt(0).toUpperCase() + v.status.slice(1)}
+            </p>
+          </div>
 
-          {/* Botão Editar */}
+          {/* Botão editar */}
           {onEdit && (
             <button
               onClick={() => onEdit(v)}
-              className="absolute bottom-3 right-3 bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1.5 rounded-lg text-sm flex items-center gap-1 shadow-md transition"
+              style={S.editButton}
+              onMouseEnter={(e) =>
+                Object.assign(e.currentTarget.style, S.editButtonHover)
+              }
+              onMouseLeave={(e) =>
+                Object.assign(e.currentTarget.style, S.editButton)
+              }
             >
               <Edit3 size={16} />
               Editar

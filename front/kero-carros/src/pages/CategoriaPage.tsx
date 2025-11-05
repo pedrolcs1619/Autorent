@@ -9,6 +9,9 @@ import CategoriaList from "../components/CategoriaList";
 import FiltroGenerico from "../components/FiltroComponent";
 import BulkDeleteButton from "../components/BulkDeleteButton";
 
+// Importando os estilos
+import * as S from "../styles/CategoriaPageStyles";
+
 const CategoriaPage: React.FC = () => {
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [selecionadas, setSelecionadas] = useState<number[]>([]);
@@ -70,18 +73,28 @@ const CategoriaPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 p-10">
-      <h1 className="text-3xl font-extrabold text-blue-700 mb-6 text-center">
-        Categorias de Veículos
-      </h1>
+    <div style={S.container}>
+      <h1 style={S.titulo}>Categorias de Veículos</h1>
 
-      <div className="mb-6">
+      <div>
         <button
           onClick={() => {
             setMostrarForm(!mostrarForm);
             setCategoriaEditando(null);
           }}
-          className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-2xl font-semibold shadow-lg hover:from-blue-600 hover:to-blue-700 hover:shadow-xl transition-all duration-300 mb-4"
+          style={S.botaoAdicionar}
+          onMouseEnter={(e) =>
+            Object.assign(
+              (e.target as HTMLButtonElement).style,
+              S.botaoAdicionarHover
+            )
+          }
+          onMouseLeave={(e) =>
+            Object.assign(
+              (e.target as HTMLButtonElement).style,
+              S.botaoAdicionar
+            )
+          }
         >
           {mostrarForm ? "Fechar Formulário" : "Cadastrar Categoria"}
         </button>
@@ -102,27 +115,33 @@ const CategoriaPage: React.FC = () => {
         )}
       </div>
 
-      <FiltroGenerico
-        campos={[
-          { nome: "nome", label: "Nome da Categoria", placeholder: "Ex: SUV" },
-          {
-            nome: "precoMin",
-            label: "Preço mínimo",
-            tipo: "number",
-            placeholder: "Ex: 100",
-          },
-          {
-            nome: "precoMax",
-            label: "Preço máximo",
-            tipo: "number",
-            placeholder: "Ex: 500",
-          },
-        ]}
-        onFiltrar={handleFiltrar}
-        onLimpar={() => setFiltros({})}
-      />
+      <div style={S.filtroContainer}>
+        <FiltroGenerico
+          campos={[
+            {
+              nome: "nome",
+              label: "Nome da Categoria",
+              placeholder: "Ex: SUV",
+            },
+            {
+              nome: "precoMin",
+              label: "Preço mínimo",
+              tipo: "number",
+              placeholder: "Ex: 100",
+            },
+            {
+              nome: "precoMax",
+              label: "Preço máximo",
+              tipo: "number",
+              placeholder: "Ex: 500",
+            },
+          ]}
+          onFiltrar={handleFiltrar}
+          onLimpar={() => setFiltros({})}
+        />
+      </div>
 
-      <div className="my-4 flex justify-start">
+      <div style={S.bulkDeleteContainer}>
         <BulkDeleteButton
           selecionadas={selecionadas}
           onDelete={handleApagarSelecionadas}

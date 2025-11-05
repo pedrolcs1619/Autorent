@@ -1,3 +1,4 @@
+// AuthContext.ts
 import { createContext } from "react";
 
 export interface AuthContextType {
@@ -5,6 +6,7 @@ export interface AuthContextType {
   login: (username: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   isAuthenticated: boolean;
+  loading: boolean; // ✅ adicionado
 }
 
 export const AuthContext = createContext<AuthContextType>({
@@ -12,4 +14,5 @@ export const AuthContext = createContext<AuthContextType>({
   login: async () => {},
   logout: async () => {},
   isAuthenticated: false,
+  loading: true, // ✅ valor inicial
 });

@@ -7,10 +7,12 @@ from drf_spectacular.views import (
 )
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from autorent.api.v1.viewsets import CookieTokenObtainPairViewSet,CookieTokenRefreshViewSet, LogoutViewSet
-
+from autorent.api.v1.viewsets import MeViewSet
 from .router.api import api_urls
 
 urlpatterns = [
+   
+
     path("admin/", admin.site.urls),
     path(
         "api/",
@@ -26,4 +28,6 @@ urlpatterns = [
     ),
     path("api/logout/", LogoutViewSet.as_view(), name="logout"),  # ✅ logout
     path("api/redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
+    path("api/me/", MeViewSet.as_view(), name="me"),
+
 ]
