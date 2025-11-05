@@ -5,7 +5,7 @@ import { AuthProvider } from "./context/AuthProvider";
 import ProtectedLayout from "./routes/ProtectedLayout";
 
 import DashboardPage from "./pages/DashboardPage";
-import CarsPage from "./pages/CarsPage";
+import VeiculoPage from "./pages/VeiculoPages";
 import ReservationsPage from "./pages/ReservationsPage";
 import ClientsPage from "./pages/ClientsPage";
 import CategoriaPage from "./pages/CategoriaPage";
@@ -31,7 +31,7 @@ const App: React.FC = () => {
             path="/cars"
             element={
               <ProtectedLayout>
-                <CarsPage />
+                <VeiculoPage />
               </ProtectedLayout>
             }
           />
