@@ -1,4 +1,3 @@
-// src/pages/CategoriaPage.tsx
 import React, { useEffect, useState } from "react";
 import {
   listarCategorias,
@@ -15,12 +14,15 @@ const CategoriaPage: React.FC = () => {
   const [selecionadas, setSelecionadas] = useState<number[]>([]);
   const [filtros, setFiltros] = useState<Record<string, string>>({});
   const [mostrarForm, setMostrarForm] = useState(false);
+  const [categoriaEditando, setCategoriaEditando] = useState<Categoria | null>(
+    null
+  );
 
   const carregarCategorias = async () => {
     try {
       const data = await listarCategorias();
-      setCategorias(data);
-      setSelecionadas([]); // limpa seleção ao recarregar
+      setCategorias(data.results || data);
+      setSelecionadas([]);
     } catch (error) {
       console.error("Erro ao carregar categorias:", error);
     }
@@ -30,6 +32,11 @@ const CategoriaPage: React.FC = () => {
     carregarCategorias();
   }, []);
 
+  const handleEditar = (categoria: Categoria) => {
+    setCategoriaEditando(categoria);
+    setMostrarForm(true);
+  };
+
   const handleFiltrar = (valores: Record<string, string>) => {
     setFiltros(valores);
   };
@@ -38,7 +45,6 @@ const CategoriaPage: React.FC = () => {
     const nomeFiltro = filtros.nome?.toLowerCase() || "";
     const precoMin = parseFloat(filtros.precoMin) || 0;
     const precoMax = parseFloat(filtros.precoMax) || Infinity;
-
     return (
       cat.nome.toLowerCase().includes(nomeFiltro) &&
       cat.diaria_base >= precoMin &&
@@ -46,7 +52,6 @@ const CategoriaPage: React.FC = () => {
     );
   });
 
-  // Função de exclusão das categorias selecionadas
   const handleApagarSelecionadas = async () => {
     if (selecionadas.length === 0) return;
     if (
@@ -58,7 +63,7 @@ const CategoriaPage: React.FC = () => {
 
     try {
       await Promise.all(selecionadas.map((id) => apagarCategoria(id)));
-      await carregarCategorias(); // recarrega a lista
+      await carregarCategorias();
     } catch (error) {
       console.error("Erro ao apagar categorias:", error);
     }
@@ -70,23 +75,33 @@ const CategoriaPage: React.FC = () => {
         Categorias de Veículos
       </h1>
 
-      {/* Formulário */}
       <div className="mb-6">
         <button
-          onClick={() => setMostrarForm(!mostrarForm)}
+          onClick={() => {
+            setMostrarForm(!mostrarForm);
+            setCategoriaEditando(null);
+          }}
           className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-2xl font-semibold shadow-lg hover:from-blue-600 hover:to-blue-700 hover:shadow-xl transition-all duration-300 mb-4"
         >
           {mostrarForm ? "Fechar Formulário" : "Cadastrar Categoria"}
         </button>
 
         {mostrarForm && (
-          <div className="mt-4">
-            <CategoriaForm onCategoriaAdicionada={carregarCategorias} />
-          </div>
+          <CategoriaForm
+            categoriaAtual={categoriaEditando}
+            onCategoriaSalva={() => {
+              carregarCategorias();
+              setMostrarForm(false);
+              setCategoriaEditando(null);
+            }}
+            onFechar={() => {
+              setMostrarForm(false);
+              setCategoriaEditando(null);
+            }}
+          />
         )}
       </div>
 
-      {/* Filtro */}
       <FiltroGenerico
         campos={[
           { nome: "nome", label: "Nome da Categoria", placeholder: "Ex: SUV" },
@@ -107,17 +122,18 @@ const CategoriaPage: React.FC = () => {
         onLimpar={() => setFiltros({})}
       />
 
-      {/* Botão de apagar categorias */}
-      <BulkDeleteButton
-        selecionadas={selecionadas}
-        onDelete={handleApagarSelecionadas}
-      />
+      <div className="my-4 flex justify-start">
+        <BulkDeleteButton
+          selecionadas={selecionadas}
+          onDelete={handleApagarSelecionadas}
+        />
+      </div>
 
-      {/* Lista de categorias */}
       <CategoriaList
         categorias={categoriasFiltradas}
         selecionadas={selecionadas}
         setSelecionadas={setSelecionadas}
+        onEdit={handleEditar}
       />
     </div>
   );
